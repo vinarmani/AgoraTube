@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+  <title>IPFS in the Browser</title>
+  <script src="https://unpkg.com/ipfs/dist/index.js"></script>
+  <script src="agoratube.js"></script>
+  <script type="text/javascript">
+  const atube = new AgoraTube(null);
+	
+	atube.on('ready', e => {
+	    console.log("AgoraTube readyState:", e.detail);
+	    // Init the node once AgoraTube is ready
+	    node.init(handleInit)
+	});
+	
+	atube.on('onupload', e => {
+	    console.log("onupload triggered", e);
+	});
+	
+	atube.on('percentcomplete', e => {
+	    updateProgress(e.detail);
+	});
+	
+	atube.on('uploadcomplete', e => {
+		console.log("Pointer Uploaded, Hash: " + atube.pointerHash, e.detail);
+	});
+	
+	
+
+    const repoPath = 'ipfs-' + Math.random()
+
+    // Create an IPFS node
+    const node = new Ipfs({
+      init: false,
+      start: false,
+      repo: repoPath
+    })
+
+    function handleInit (err) {
+      if (err) {
+        throw err
+      }
+
+      node.start(() => {
+        console.log('Online status: ', node.isOnline() ? 'online' : 'offline')
+
+        document.getElementById("status").innerHTML= 'Node status: ' + (node.isOnline() ? 'online' : 'offline');
+        document.getElementById("upload").style.display = (node.isOnline() ? 'block' : 'hidden');
+      })
+    }
+  </script>
+</head>
+<style>
+  #progress_bar {
+    margin: 10px 0;
+    padding: 3px;
+    border: 1px solid #000;
+    font-size: 14px;
+    clear: both;
+    opacity: 0;
+    -moz-transition: opacity 1s linear;
+    -o-transition: opacity 1s linear;
+    -webkit-transition: opacity 1s linear;
+  }
+  #progress_bar.loading {
+    opacity: 1.0;
+  }
+  #progress_bar .percent {
+    background-color: #99ccff;
+    height: auto;
+    width: 0;
+  }
+  #upload {
+  	display: none;
+  }
+  
+</style>
+<body>
+  <h1>AgoraTube - Upload</h1>
+
+  <h1 id="status">IPFS Node status: offline</h1>
+
+<br><br>
+
+<div id="upload">
+	<input type="file" id="files" name="file" />
+	<button onclick="abortRead();">Cancel read</button>
+	<div id="progress_bar"><div class="percent">0%</div></div>
+</div>
+<br>
+
+<script>
+	
+	var progress = document.querySelector('.percent');
+  
+	function updateProgress(percentLoaded) {
+		// Increase the progress bar length.
+		percentLoaded = Math.round(percentLoaded);
+		if (percentLoaded < 100) {
+        	progress.style.width = percentLoaded + '%';
+        	progress.textContent = percentLoaded + '%';
+		} else {
+			progress.style.width = '100%';
+			progress.textContent = '100%';
+			setTimeout("document.getElementById('progress_bar').className='';", 2000);
+		}
+	}
+
+	function errorHandler(evt) {
+	    switch(evt.target.error.code) {
+	      case evt.target.error.NOT_FOUND_ERR:
+	        alert('File Not Found!');
+	        break;
+	      case evt.target.error.NOT_READABLE_ERR:
+	        alert('File is not readable');
+	        break;
+	      case evt.target.error.ABORT_ERR:
+	        break; // noop
+	      default:
+	        alert('An error occurred reading this file.');
+	    };
+	}
+
+	function handleFileSelect(evt) {
+		//Reset progress indicator on new file selection.
+		document.getElementById('progress_bar').className = 'loading';
+		progress.style.width = '0%';
+		progress.textContent = '0%';
+		
+		// Upload File (Blob)
+		atube.upload(evt.target.files[0]);
+
+	}
+  
+	document.getElementById('files').addEventListener('change', handleFileSelect, false);
+</script>
+
+</body>
+</html>

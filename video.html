@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+  <title>IPFS in the Browser</title>
+  <script src="https://unpkg.com/ipfs/dist/index.js"></script>
+  <script src="agoratube.js"></script>
+  <script type="text/javascript">
+
+	//Log GET object
+	console.log('GET variables', $_GET);
+	// Static HASH String
+    var hashStr = 'QmQqjik8CACNQekK16oMze4LMCu3LYwQWoSfnvj3TU2mqu'; // Eric Voorhees Interview
+    
+    //Use hash string from GET variable
+    if(typeof $_GET.hash !== 'undefined')
+    	hashStr = $_GET.hash;
+	
+    // AgoraTube Functionality
+	const atube = new AgoraTube(null);
+	atube.action = "video";
+	
+	atube.on('ready', e => {
+	    console.log("AgoraTube readyState:", e.detail);
+	    // Init the node once AgoraTube is ready
+	    node.init(handleInit)
+	});
+	
+	atube.on('pointerfetch', e => {
+	    console.log("Pointer Fetched", e.detail);
+	    // Set up the video element
+		var video = atube.video;
+		video.controls = true;
+		video.autoplay = true;
+		video.height = 240;
+		video.width = 320;
+		document.getElementById("video_container").appendChild(video);
+	    // Set the action to video and begin downloading
+	    atube.pushHash(atube.pointerIndex);
+	});
+	
+	atube.on('ondownload', e => {
+	    console.log("Successfully Downloaded: ", e.detail);
+	});
+  
+
+	// IPFS Node functionality
+	const repoPath = 'ipfs-' + Math.random()
+
+    // Create an IPFS node
+    const node = new Ipfs({
+      init: false,
+      start: false,
+      repo: repoPath
+    })
+
+    function handleInit (err) {
+      if (err) {
+        throw err
+      } 	  
+		// Start the IPFS node
+		node.start(() => {
+			console.log('Online status: ', node.isOnline() ? 'online' : 'offline')
+	
+	        document.getElementById("status").innerHTML= 'Node status: ' + (node.isOnline() ? 'online' : 'offline')
+	        
+	        // Fetch the pointer JSON and begin downloading chunks
+	        atube.fetchPointer(node, hashStr);
+		
+		})// End Node Start	    
+      
+    } //End Handle Init
+    
+  </script>
+</head>
+<body>
+  <h1>AgoraTube - Video Player</h1>
+
+  <h1 id="status">IPFS Node status: offline</h1>
+
+<style>
+  #progress_bar {
+    margin: 10px 0;
+    padding: 3px;
+    border: 1px solid #000;
+    font-size: 14px;
+    clear: both;
+    opacity: 0;
+    -moz-transition: opacity 1s linear;
+    -o-transition: opacity 1s linear;
+    -webkit-transition: opacity 1s linear;
+  }
+  #progress_bar.loading {
+    opacity: 1.0;
+  }
+  #progress_bar .percent {
+    background-color: #99ccff;
+    height: auto;
+    width: 0;
+  }
+  
+</style>
+
+<script>
+
+</script>
+<br>
+<section id="video_container">
+ <!-- <video id="player" controls autoplay width="320" height="240"></video> -->
+</section>
+
+</div>
+</body>
+</html>
