@@ -1,6 +1,6 @@
 # AgoraTube
-## Fully Decentralized, Censorship-Resistant, Browser-Based Video Sharing Javascript Library For js-ipfs
-AgoraTube is an add-on library to [js-ipfs](https://github.com/ipfs/js-ipfs) which allows a user to run an IPFS node in their browser and leverage that node to upload, download, and play media files. It's free, no centralized server (or database) is needed and the resulting files have all of the censorship resistance that [The Interplanetary File System](http://ipfs.io) brings to the party.
+## Fully Decentralized, Censorship-Resistant, Browser-Based Video Sharing Javascript Add-On For js-ipfs
+AgoraTube is an add-on to [js-ipfs](https://github.com/ipfs/js-ipfs) which allows a user to run an IPFS node in their browser and leverage that node to upload, download, and play media files. It's free, no centralized server (or database) is needed and the resulting files have all of the censorship resistance that [The Interplanetary File System](http://ipfs.io) brings to the party.
 
 ## The Challenge
 
