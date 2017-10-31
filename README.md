@@ -59,7 +59,7 @@ This repository includes simple examples for upload, download, and video playing
 
 Because AgoraTube uses the native HTML5 video element, it is limited in what file types it can play. Currently, only MP4 files encoded with H.264 video and AAC audio are compatible with AgoraTube. Eventually, all files compatible with the HTML5 Video and Audio elements will be supported. All file types are supported for upload and straight download.
 
-Video files also must be [MPEG DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP) compliant this means that content creators will nedd to take an additional step before uploading their content if they want it to play in the video player.
+Video files also must be [MPEG DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP) compliant this means that content creators will need to take an additional step before uploading their content if they want it to play in the video player.
 
 First you must have MP4Box, which can be downloaded [here](https://gpac.wp.imt.fr/mp4box/). Then, from the command line, you must run this command on your file:
 ```
